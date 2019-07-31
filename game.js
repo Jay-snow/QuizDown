@@ -16,8 +16,10 @@ function getMessageText() {
   // console.log(getMessageText());
   
   let card = {
+      category: 0,
     questions: [
-      {
+      //Overwatch questions
+      [{
         question: "When was Overwatch released?",
         choice1: "June 7, 2016",
         choice2: "May 24, 2016",
@@ -82,7 +84,41 @@ function getMessageText() {
         choice3: "100 armor, 500 shields",
         choice4: "750 shields",
         answer: "750 shields"
-      }
+      }],
+      //JoJo Bizarre Adventure questions
+      [{
+        question: "Who owns the stand Star Platinum",
+        choice1: "DIO",
+        choice2: "Joseph",
+        choice3: "Jotaro",
+        choice4: "Koichi",
+        answer: "Jotaro"
+      },
+      {
+        question: "What is the longest time DIO can stop time? ",
+        choice1: "3 seconds",
+        choice2: "9 seconds",
+        choice3: "As long as he's holding his breathe",
+        choice4: "Forever",
+        answer: "9 seconds"
+      },
+      {
+        question: "Which animal is definitely not surviving this season?",
+        choice1: "The dog",
+        choice2: "The cat",
+        choice3: "The turtle",
+        choice4: "The horse",
+        answer: "The dog"
+      },
+      {
+        question:
+          "Which character willingly leaves the protagonists party?",
+        choice1: "Hol Horse",
+        choice2: "Avdol",
+        choice3: "Uncle Iroh",
+        choice4: "Fugo",
+        answer: "Fugo"
+      }]
     ],
     round: 0,
     getCard: () =>
@@ -91,14 +127,14 @@ function getMessageText() {
                <h3 class="timer  text-primary font-weight-bold"> <p> Time Left </p> 10 </h3>
                <h1 style="position:absolute;top:0;" class="text-warning"> Score: ${game.score} </h1>
               </div>
-              <h1 class="${fontColor}" style="text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;margin-bottom:5rem;margin-top:5rem;"> ${card.questions[card.round].question} </h1> 
+              <h1 class="${fontColor}" style="text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;margin-bottom:5rem;margin-top:5rem;"> ${card.questions[card.category][card.round].question} </h1> 
              
               
           <ol class="list-inline mt-4">
-             <li  class="list-inline"> <button id="choice1" class="btn btn-light btn-block mb-3 choice" > ${card.questions[card.round].choice1} </button> </li>
-             <li  class="list-inline"> <button id="choice2" class="btn btn-light btn-block mb-3 choice"> ${card.questions[card.round].choice2} </button></li>
-             <li class="list-inline"> <button id="choice3" class="btn btn-light btn-block mb-3 choice"> ${card.questions[card.round].choice3} </button></li>
-             <li class="list-inline"> <button id="choice4" class="btn btn-light btn-block mb-3 choice"> ${card.questions[card.round].choice4} </button></li>
+             <li  class="list-inline"> <button id="choice1" class="btn btn-light btn-block mb-3 choice" > ${card.questions[card.category][card.round].choice1} </button> </li>
+             <li  class="list-inline"> <button id="choice2" class="btn btn-light btn-block mb-3 choice"> ${card.questions[card.category][card.round].choice2} </button></li>
+             <li class="list-inline"> <button id="choice3" class="btn btn-light btn-block mb-3 choice"> ${card.questions[card.category][card.round].choice3} </button></li>
+             <li class="list-inline"> <button id="choice4" class="btn btn-light btn-block mb-3 choice"> ${card.questions[card.category][card.round].choice4} </button></li>
           </ol>
               `
   };
@@ -115,17 +151,19 @@ function getMessageText() {
     timerPaused: false,
     startBgMusic: () => {
       $(document).ready(function() {
+        if (game.soundMuted == false) {
         $("#bg-music").prop("volume", 0.3);
         $("#bg-music")
           .get(0)
           .play();
-      });
+      }});
     },
     triggerSound: sound => {
+        if (game.soundMuted == false) {
       $(sound)
         .get(0)
         .play();
-    },
+    }},
     timer: () => {
       console.log("Timer has begun.");
       setInterval(() => {
@@ -191,7 +229,7 @@ function getMessageText() {
                   <div id="game-col" style="background-color:rgba(0,0,0,0.7);" class="col">
                   <h1 class="text-white"> Final Score: <span id="scoreColor" class="${
                     game.scoreColor
-                  }">${game.score}</span>/${card.questions.length * 10} </h1>
+                  }">${game.score}</span>/${card.questions[card.category].length * 10} </h1>
                   
                   <h1 class="text-warning border-bottom-1">  Zenyatta Says.. </h1>
                   <p id="feedback" class="text-white h2"> </p>
@@ -212,7 +250,7 @@ function getMessageText() {
       game.scoreFeedback();
     },
     nextQuestion: function newQuestion() {
-      if (card.questions.length > card.round + 1) {
+      if (card.questions[card.category].length > card.round + 1) {
         card.round += 1;
         $("#game-col").empty();
         $("#game-col").append(card.getCard());
@@ -230,7 +268,7 @@ function getMessageText() {
       if (
         $(game.clickID)
           .text()
-          .trim() == card.questions[card.round].answer
+          .trim() == card.questions[card.category][card.round].answer
       ) {
         $(game.clickID).addClass("btn-primary");
         $(game.clickID).removeClass("btn-light");
@@ -239,7 +277,7 @@ function getMessageText() {
         $(game.clickID).removeClass("btn-light");
       }
   
-      if (game.playerChoice == card.questions[card.round].answer) {
+      if (game.playerChoice == card.questions[card.category][card.round].answer) {
         //    $('#choice1').addClass('btn-success');
         //    $('#choice1').removeClass('btn-light');
         game.triggerSound("#correctSound");
@@ -266,7 +304,8 @@ function getMessageText() {
                           </div>
                           <div class="col-12">
                                   <button type="button" id="btn-new-game" class=" mt-4 btn btn-danger btn-lg">  New Game</button>
-                          </div>
+                                 <br> <button type="button" id="btn-mute-game" class=" mt-4 btn btn-danger btn-lg">  Mute Game</button>
+                                  </div>
                                   
                                   
                           </div>
@@ -275,14 +314,43 @@ function getMessageText() {
           );
           break;
   
-        case "Game1":
+        case "game-screen":
           $("body").prepend(
             `
                                   <div id="game"  class="container-fluid ${bgColor} mx-auto text-center">
                                   <div class="row" >
                                       <div id="game-col" class="col">
                                       
+                                      
                         
+                                      </div>
+                                      </div>
+                                  </div>
+                                  <audio id="bg-music">
+                                  <source src="sound/bensound-theduel.mp3" type="audio/mpeg">
+                                  </audio>
+                                  <audio id="correctSound">
+                                  <source src="sound/correct.wav" type="audio/wav">
+                                  </audio>
+                                  <audio id="wrongSound">
+                                  <source src="sound/wrong2.mp3" type="audio/mpeg">
+                                  </audio>
+                                  
+                                  
+                                  
+                                  `
+          );
+          break;
+
+          case "category-screen":
+          $("body").prepend(
+            `
+                                  <div id="game"  class="container-fluid ${bgColor} mx-auto text-center">
+                                  <div class="row" >
+                                      <div id="game-col" class="col">
+                                      
+                                      <button type="button" id="btn-start-overwatch" class=" mt-4 btn btn-danger btn-lg">  Overwatch</button>
+                                      <button type="button" id="btn-start-jojo" class=" mt-4 btn btn-danger btn-lg">  Jojo's Bizarre Adventure</button>
                                       </div>
                                       </div>
                                   </div>
@@ -319,14 +387,50 @@ function getMessageText() {
   let choiceButton = document.querySelectorAll("choice");
   
   //Starts the main game, and sets up the timer.
-  $("#btn-new-game").click(function() {
+  $("#btn-new-game").on( "click", function() {
     game.clearScreen();
-    game.getScreen("Game1");
+    game.getScreen("category-screen");
   
     //  game.start('Game1');
+   // $("#game-col").append(card.getCard());
+   // game.setupBindings();
+   // game.timer();
+   // game.startBgMusic();
+
+//add the event listeners for the categories
+
+   $("#btn-start-overwatch").on( "click", function() {
+    game.clearScreen();
+    game.getScreen("game-screen");
     $("#game-col").append(card.getCard());
     game.setupBindings();
     game.timer();
     game.startBgMusic();
+  });
+
+  $("#btn-start-jojo").on( "click", function() {
+    game.clearScreen();
+    card.category = 1;
+    game.getScreen("game-screen");
+    $("#game-col").append(card.getCard());
+    game.setupBindings();
+    game.timer();
+    game.startBgMusic();
+  });
+
+
+  });
+
+
+
+  $("#btn-mute-game").click(function() {
+    if (game.soundMuted == false) {
+        game.soundMuted = true;
+        $(this).css("background-color", "green");
+    } else {
+        game.soundMuted = false;
+        $(this).css("background-color", "red");
+    }
+    
   });
   
