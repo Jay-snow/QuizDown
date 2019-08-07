@@ -230,8 +230,10 @@ function getMessageText() {
                   <h1 class="text-white"> Final Score: <span id="scoreColor" class="${
                     game.scoreColor
                   }">${game.score}</span>/${card.questions[card.category].length * 10} </h1>
-                  
+                  ${ card.category == 0 ? `
                   <h1 class="text-warning border-bottom-1">  Zenyatta Says.. </h1>
+                      ` : '' }
+                  
                   <p id="feedback" class="text-white h2"> </p>
                   </div>
                   </div>
@@ -295,20 +297,29 @@ function getMessageText() {
           $("#javascript-disabled").remove();
           $("body").append(
             `
+                      
                       <div id="game" class="container-fluid ${bgColor} mx-auto text-center">
                       <div class="row" style="height:100%;">
+                      <div class="col-12  top-hud" >
+                      </div>
+                      <div class="col-12 wrapper">
+                      </div>
                           <div class="col-12">
                           <div class="mx-auto" id="logo">
                               <h1 id="game-title" class="mb-4"> Quiz <div id="logodown"> Down </div> </h1>
                                     </div>
                           </div>
                           <div class="col-12">
-                                  <button type="button" id="btn-new-game" class=" mt-4 btn btn-danger btn-lg">  New Game</button>
+                                  <button type="button" id="btn-new-game" class=" mt-4 btn  btn-lg">  New Game</button>
                                  <br> <button type="button" id="btn-mute-game" class=" mt-4 btn btn-danger btn-lg">  Mute Game</button>
                                   </div>
-                                  
-                                  
+                                  <div class="col-12 wrapper">
+                                  </div>      
+                          <div class="col-12 bot-hud">
+                          
                           </div>
+                      </div>
+                     
                       </div>
                       `
           );
@@ -401,6 +412,7 @@ function getMessageText() {
 
    $("#btn-start-overwatch").on( "click", function() {
     game.clearScreen();
+    card.category = 0;
     game.getScreen("game-screen");
     $("#game-col").append(card.getCard());
     game.setupBindings();
